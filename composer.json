@@ -1,0 +1,18 @@
+{
+  "name": "ilias/rhetoric",
+  "description": "Package adressed to handling routes with PHP",
+  "type": "false",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Ilias\\Rhetoric\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Murilo Elias",
+      "email": "murilo7456@gmail.com"
+    }
+  ],
+  "require": {}
+}
