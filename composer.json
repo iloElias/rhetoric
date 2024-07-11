@@ -3,7 +3,10 @@
   "type": "library",
   "version": "1.0.0",
   "description": "Package addressed to handling routes with PHP",
-  "keywords": ["route","routes"],
+  "keywords": [
+    "route",
+    "routes"
+  ],
   "homepage": "https://github.com/iloElias/rhetoric",
   "license": "MIT",
   "autoload": {
@@ -19,5 +22,6 @@
   ],
   "require": {
     "php": ">=8.0.0"
-  }
+  },
+  "minimum-stability": "dev"
 }
