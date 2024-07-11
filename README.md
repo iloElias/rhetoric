@@ -4,13 +4,6 @@
 [![Source Code](https://img.shields.io/badge/source-iloelias/rhetoric-blue.svg?style=flat-square)](https://github.com/iloElias/rhetoric)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-Simple router system for PHP
-
-
-Sure! Below is a markdown guide for using the PHP router system as a Composer package.
-
-# PHP Router System Package
-
 This PHP router system allows you to define and manage your application's routes in a simple and organized manner, inspired by Laravel's routing system.
 
 ## Usage
@@ -21,6 +14,8 @@ Create a file to define your routes, for example, in your project root folder, `
 
 ```php
 <?php
+
+use Ilias\Rhetoric\Router\Router;
 
 Router::get("/", IndexController::class . "@handleApiIndex");
 Router::get("/favicon.ico", IndexController::class . "@favicon");
@@ -47,7 +42,7 @@ In your application's entry point, typically `index.php`, set up the router to h
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/routes.php';
 
-use Ilias\PhpHttpRequestHandler\Router\Router;
+use Ilias\Rhetoric\Router\Router;
 
 Router::setup();
 ```
@@ -59,7 +54,7 @@ Create your controller classes to handle the requests. For example, create `Inde
 ```php
 <?php
 
-namespace Ilias\PhpHttpRequestHandler\Controller;
+namespace Ilias\Rhetoric\Controller;
 
 class IndexController
 {
@@ -79,12 +74,14 @@ Similarly, create other controller classes like `AssetController.php` and `Debug
 
 ### Step 4: Handling Middleware (Optional)
 
-If you want to use middleware, create a middleware class implementing `Ilias\PhpHttpRequestHandler\Middleware\Middleware`:
+If you want to use middleware, create a middleware class implementing `Ilias\Rhetoric\Middleware\Middleware`:
 
 ```php
 <?php
 
-namespace Ilias\PhpHttpRequestHandler\Middleware;
+namespace Ilias\Rhetoric\Middleware;
+
+use Ilias\Rhetoric\Middleware\Middleware;
 
 class ExampleMiddleware implements Middleware
 {
@@ -105,16 +102,19 @@ Router::group(['prefix' => '/admin', 'middleware' => [ExampleMiddleware::class]]
 });
 ```
 
-### Step 5: Testing Your Routes
+### Step 5: Dispatching Routes
 
-Start your PHP server and navigate to the defined routes to test them:
+Using the `Request` static method, `dispatch()`, you can handle the current route:
 
-```bash
-php -S localhost:8000
+```php
+<?php
+
+Request::dispatch($requestMethod, $requestUri);
 ```
 
-Visit `http://localhost:8000` to see your API in action.
 
-## Conclusion
+## Explanations
 
-This PHP router system provides a simple and flexible way to define and manage your application's routes. By following the steps above, you can easily set up and use this package in your project.
+* `::class`
+
+  Is recommended to use the static reference to your class, so te code does know exactly which class to use
