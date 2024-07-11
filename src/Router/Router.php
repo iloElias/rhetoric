@@ -7,6 +7,7 @@ use Ilias\Rhetoric\IMiddleware\IMiddleware;
 class Router
 {
   private static $routes = [];
+  private static $params = [];
   private static $baseMiddleware = [];
 
   public static function setup()
@@ -76,6 +77,11 @@ class Router
     return $routes;
   }
 
+  public static function getParams()
+  {
+    return self::$params;
+  }
+
   public static function group(string $prefix, callable $callback, array $middleware = [])
   {
     $group = new RouterGroup($prefix, array_merge(self::$baseMiddleware, $middleware));
@@ -117,7 +123,8 @@ class Router
       foreach ($paramNames[1] as $index => $name) {
         $params[$name] = $matches[$index + 1];
       }
-      return $params;
+      self::$params = $params;
+      return true;
     }
 
     return false;
