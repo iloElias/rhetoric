@@ -2,6 +2,7 @@
 
 namespace Ilias\Rhetoric\Router;
 
+use Ilias\Choir\Exceptions\DuplicatedRouteException;
 use Ilias\Rhetoric\IMiddleware\IMiddleware;
 
 class Router
@@ -17,12 +18,22 @@ class Router
     self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
   }
 
+  private static function setRoute(Route $route)
+  {
+    foreach (self::$routes as $storedRoute) {
+      if ($storedRoute->uri === $route->uri && $storedRoute->method === $route->method) {
+        throw new DuplicatedRouteException("{$route->uri} route with method {$route->method} is already defined");
+      }
+    }
+    self::$routes[] = $route;
+  }
+
   private static function addRoute(Route $route)
   {
     if (str_ends_with($route->uri, "/") && $route->uri !== "/") {
       $route->uri = substr($route->uri, 0, -1);
     }
-    self::$routes[] = $route;
+    self::setRoute($route);
   }
 
   public static function get(string $uri, string $action, array $middleware = [])
@@ -92,7 +103,7 @@ class Router
       if (str_ends_with($route->uri, "/") && $route->uri !== "/") {
         $route->uri = substr($route->uri, 0, -1);
       }
-      self::$routes[] = $route;
+      self::setRoute($route);
     }
   }
 
