@@ -1,9 +1,8 @@
 <?php
 
-namespace Ilias\Choir\Exceptions;
+namespace Ilias\Rhetoric\Exceptions;
 
-use Exception;
-
-class MiddlewareException extends Exception
+class MiddlewareException extends \Exception
 {
+  protected $message = 'Middleware execution failed';
 }

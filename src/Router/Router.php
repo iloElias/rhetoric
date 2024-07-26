@@ -2,14 +2,17 @@
 
 namespace Ilias\Rhetoric\Router;
 
-use Ilias\Choir\Exceptions\DuplicatedRouteException;
-use Ilias\Rhetoric\IMiddleware\IMiddleware;
+use Ilias\Rhetoric\Exceptions\DuplicateParameterException;
+use Ilias\Rhetoric\Exceptions\DuplicateRouteException;
+use Ilias\Rhetoric\Exceptions\MethodNotAllowedException;
+use Ilias\Rhetoric\Exceptions\RouteNotFoundException;
+use Ilias\Rhetoric\Middleware\IMiddleware;
 
 class Router
 {
-  private static $routes = [];
-  private static $params = [];
-  private static $baseMiddleware = [];
+  private static array $routes = [];
+  private static array $params = [];
+  private static array $baseMiddleware = [];
 
   public static function setup()
   {
@@ -33,7 +36,36 @@ class Router
     if (str_ends_with($route->uri, "/") && $route->uri !== "/") {
       $route->uri = substr($route->uri, 0, -1);
     }
+    self::validateUri($route->uri);
+    self::checkForDuplicateRoute($route);
     self::setRoute($route);
+  }
+
+  public static function getParams()
+  {
+    return self::$params;
+  }
+
+  private static function validateUri(string $uri)
+  {
+    $regex = '/\{([\w]+)\}/';
+    preg_match_all($regex, $uri, $paramNames);
+    $paramNames = $paramNames[1];
+    $paramCounts = array_count_values($paramNames);
+    foreach ($paramCounts as $name => $count) {
+      if ($count > 1) {
+        throw new DuplicateParameterException("Duplicate parameter '{$name}' found in the route URL.");
+      }
+    }
+  }
+
+  private static function checkForDuplicateRoute(Route $newRoute)
+  {
+    foreach (self::$routes as $route) {
+      if ($route->uri === $newRoute->uri && $route->method === $newRoute->method) {
+        throw new DuplicateRouteException("Duplicate route '{$newRoute->uri}' found for method '{$newRoute->method}'.");
+      }
+    }
   }
 
   public static function get(string $uri, string $action, array $middleware = [])
@@ -71,7 +103,7 @@ class Router
     );
   }
 
-  public function custom(string $method, string $uri, string $action, array $middleware = [])
+  public static function custom(string $method, string $uri, string $action, array $middleware = [])
   {
     self::addRoute(
       new Route(strtoupper($method), $uri, $action, $middleware)
@@ -103,29 +135,37 @@ class Router
       if (str_ends_with($route->uri, "/") && $route->uri !== "/") {
         $route->uri = substr($route->uri, 0, -1);
       }
+      self::validateUri($route->uri);
+      self::checkForDuplicateRoute($route);
       self::setRoute($route);
     }
   }
 
   public static function dispatch($method, $uri)
   {
+    $routeFound = false;
+
     foreach (self::$routes as $route) {
-      if (self::matchRoute($route, $method, $uri)) {
-        self::handleRoute($route);
-        return;
+      if (self::matchRoute($route, $uri)) {
+        $routeFound = true;
+        if ($route->method === $method) {
+          self::handleRoute($route);
+          return;
+        }
       }
     }
+
+    if ($routeFound) {
+      throw new MethodNotAllowedException("Method not allowed for this route.");
+    }
+    throw new RouteNotFoundException("Route not found.");
   }
 
-  private static function matchRoute($route, $method, $uri): array | bool
+  private static function matchRoute($route, $uri)
   {
-    if ($route->method !== $method) {
-      return false;
-    }
-
     $regex = '/\{([\w]+)\}/';
     $pattern = preg_replace($regex, '([\w-]+)', $route->uri);
-    $pattern = str_replace('/', '\/', preg_replace($regex, '([\w-]+)', $route->uri));
+    $pattern = str_replace('/', '\/', $pattern);
     $pattern = '/^' . $pattern . '$/';
 
     if (preg_match($pattern, $uri, $matches)) {
@@ -141,7 +181,7 @@ class Router
     return false;
   }
 
-  private static function handleRoute($route)
+  private static function handleRoute(Route $route)
   {
     foreach ($route->middleware as $middleware) {
       if (is_subclass_of($middleware, IMiddleware::class)) {
