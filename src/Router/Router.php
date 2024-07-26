@@ -2,8 +2,8 @@
 
 namespace Ilias\Rhetoric\Router;
 
-use Ilias\Rhetoric\Exceptions\DuplicateParameterException;
-use Ilias\Rhetoric\Exceptions\DuplicateRouteException;
+use Ilias\Rhetoric\Exceptions\DuplicatedRouteException;
+use Ilias\Rhetoric\Exceptions\DuplicatedParameterException;
 use Ilias\Rhetoric\Exceptions\MethodNotAllowedException;
 use Ilias\Rhetoric\Exceptions\RouteNotFoundException;
 use Ilias\Rhetoric\Middleware\IMiddleware;
@@ -41,11 +41,6 @@ class Router
     self::setRoute($route);
   }
 
-  public static function getParams()
-  {
-    return self::$params;
-  }
-
   private static function validateUri(string $uri)
   {
     $regex = '/\{([\w]+)\}/';
@@ -54,7 +49,7 @@ class Router
     $paramCounts = array_count_values($paramNames);
     foreach ($paramCounts as $name => $count) {
       if ($count > 1) {
-        throw new DuplicateParameterException("Duplicate parameter '{$name}' found in the route URL.");
+        throw new DuplicatedParameterException("Duplicate parameter '{$name}' found in the route URL.");
       }
     }
   }
@@ -63,7 +58,7 @@ class Router
   {
     foreach (self::$routes as $route) {
       if ($route->uri === $newRoute->uri && $route->method === $newRoute->method) {
-        throw new DuplicateRouteException("Duplicate route '{$newRoute->uri}' found for method '{$newRoute->method}'.");
+        throw new DuplicatedRouteException("Duplicated route '{$newRoute->uri}' found for method '{$newRoute->method}'.");
       }
     }
   }

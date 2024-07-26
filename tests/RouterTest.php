@@ -1,11 +1,13 @@
 <?php
 
+use Ilias\Rhetoric\Exceptions\DuplicatedParameterException;
+use Ilias\Rhetoric\Exceptions\DuplicatedRouteException;
 use Ilias\Rhetoric\Exceptions\MiddlewareException;
+use Ilias\Rhetoric\Exceptions\RouteNotFoundException;
 use Ilias\Rhetoric\Middleware\IMiddleware;
 use PHPUnit\Framework\TestCase;
 use Ilias\Rhetoric\Router\Router;
 use Ilias\Rhetoric\Router\Route;
-use Ilias\Rhetoric\Router\RouterGroup;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class TestController
@@ -275,7 +277,7 @@ class RouterTest extends TestCase
 
 	public function testRouteNotFoundException()
 	{
-		$this->expectException(\Ilias\Rhetoric\Exceptions\RouteNotFoundException::class);
+		$this->expectException(RouteNotFoundException::class);
 		Router::dispatch('GET', '/nonexistent');
 	}
 
@@ -313,22 +315,22 @@ class RouterTest extends TestCase
 		$this->assertEquals($expected, $this->invokeProperty(Router::class, 'params'));
 	}
 
-	public function testDuplicateParamInRoute()
+	public function testDuplicatedParamInRoute()
 	{
-		$this->expectException(\Ilias\Rhetoric\Exceptions\DuplicateParameterException::class);
+		$this->expectException(DuplicatedParameterException::class);
 		Router::get('/user/{id}/post/{id}', 'TestController@testMethod');
 	}
 
-	public function testDuplicateRoute()
+	public function testDuplicatedRoute()
 	{
 		Router::get('/user/{id}', 'TestController@testMethod');
-		$this->expectException(\Ilias\Rhetoric\Exceptions\DuplicateRouteException::class);
+		$this->expectException(DuplicatedRouteException::class);
 		Router::get('/user/{id}', 'TestController@testMethod');
 	}
 
 	public function testInvalidRouteDefinition()
 	{
-		$this->expectException(\Ilias\Rhetoric\Exceptions\RouteNotFoundException::class);
+		$this->expectException(RouteNotFoundException::class);
 		Router::get('/invalid/[pattern]', 'TestController@testMethod');
 		Router::dispatch('GET', '/invalid/pattern');
 	}
@@ -338,7 +340,7 @@ class RouterTest extends TestCase
 		Router::get('/test', 'TestController@testMethod', [FailingMiddleware::class]);
 		$route = new Route('GET', '/test', 'TestController@testMethod', [FailingMiddleware::class]);
 
-		$this->expectException(\Ilias\Rhetoric\Exceptions\MiddlewareException::class);
+		$this->expectException(MiddlewareException::class);
 		$this->invokeMethod(Router::class, 'handleRoute', [$route]);
 	}
 
