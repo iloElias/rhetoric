@@ -2,7 +2,7 @@
 
 namespace Ilias\Rhetoric\Router;
 
-use Ilias\Choir\Exceptions\DuplicatedRouteException;
+use Ilias\Rhetoric\Exceptions\DuplicatedRouteException;
 use Ilias\Rhetoric\Exceptions\DuplicatedParameterException;
 use Ilias\Rhetoric\Exceptions\MethodNotAllowedException;
 use Ilias\Rhetoric\Exceptions\RouteNotFoundException;

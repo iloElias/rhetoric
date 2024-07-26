@@ -1,9 +1,7 @@
 <?php
 
-namespace Ilias\Choir\Exceptions;
+namespace Ilias\Rhetoric\Exceptions;
 
-use Exception;
-
-class DuplicatedRouteException extends Exception
+class DuplicatedRouteException extends \Exception
 {
 }
