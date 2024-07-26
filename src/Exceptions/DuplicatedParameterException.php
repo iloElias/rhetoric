@@ -2,7 +2,13 @@
 
 namespace Ilias\Rhetoric\Exceptions;
 
-class DuplicatedParameterException extends \Exception
+use Exception;
+
+/**
+ * Class DuplicateParameterException
+ * Thrown when duplicate parameters are found in a route URI.
+ */
+class DuplicatedParameterException extends Exception
 {
-  protected $message = 'Duplicate parameter found in the route URL.';
+    protected $message = 'Duplicate parameter found in the route URL.';
 }

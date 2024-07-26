@@ -2,6 +2,13 @@
 
 namespace Ilias\Rhetoric\Exceptions;
 
-class DuplicatedRouteException extends \Exception
+use Exception;
+
+/**
+ * Class DuplicateRouteException
+ * Thrown when a duplicate route is found.
+ */
+class DuplicatedRouteException extends Exception
 {
+    protected $message = 'Duplicate route found.';
 }
