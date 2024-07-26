@@ -21,6 +21,16 @@ class Router
     self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
   }
 
+  private static function setRoute(Route $route)
+  {
+    foreach (self::$routes as $storedRoute) {
+      if ($storedRoute->uri === $route->uri && $storedRoute->method === $route->method) {
+        throw new DuplicatedRouteException("{$route->uri} route with method {$route->method} is already defined");
+      }
+    }
+    self::$routes[] = $route;
+  }
+
   private static function addRoute(Route $route)
   {
     if (str_ends_with($route->uri, "/") && $route->uri !== "/") {
@@ -28,7 +38,7 @@ class Router
     }
     self::validateUri($route->uri);
     self::checkForDuplicateRoute($route);
-    self::$routes[] = $route;
+    self::setRoute($route);
   }
 
   public static function getParams()
@@ -110,6 +120,11 @@ class Router
     return $routes;
   }
 
+  public static function getParams()
+  {
+    return self::$params;
+  }
+
   public static function group(string $prefix, callable $callback, array $middleware = [])
   {
     $group = new RouterGroup($prefix, array_merge(self::$baseMiddleware, $middleware));
@@ -122,7 +137,7 @@ class Router
       }
       self::validateUri($route->uri);
       self::checkForDuplicateRoute($route);
-      self::$routes[] = $route;
+      self::setRoute($route);
     }
   }
 

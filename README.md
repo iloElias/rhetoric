@@ -1,9 +1,9 @@
 # Rhetoric Router @IloElias
 
-[![Maintainer](http://img.shields.io/badge/maintainer-@iloElias-blue.svg?style=flat-square)](https://github.com/iloElias)
-[![Package](https://img.shields.io/badge/package-iloelias/rhetoric-orange.svg?style=flat-square)](https://packagist.org/packages/ilias/rhetoric)
-[![Source Code](https://img.shields.io/badge/source-iloelias/rhetoric-blue.svg?style=flat-square)](https://github.com/iloElias/rhetoric)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Maintainer](http://img.shields.io/badge/maintainer-@iloElias-blue.svg)](https://github.com/iloElias)
+[![Package](https://img.shields.io/badge/package-iloelias/rhetoric-orange.svg)](https://packagist.org/packages/ilias/rhetoric)
+[![Source Code](https://img.shields.io/badge/source-iloelias/rhetoric-blue.svg)](https://github.com/iloElias/rhetoric)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 This PHP router system allows you to define and manage your application's routes in a simple and organized manner, inspired by Laravel's routing system.
 ## Installation
@@ -134,6 +134,22 @@ Using the `Request` static method, `dispatch()`, you can handle the current rout
 <?php
 
 Request::dispatch($requestMethod, $requestUri);
+```
+
+### Dynamic params
+
+Using the `Request` static attribute, `$params`, you can access an associative array:
+
+```php
+<?php
+
+Router::get("/user/{username}/config", Authenticate::class . "@userConfigurations");
+```
+
+When you access the route `http://your.dev.api.com/user/iloElias/config`, the params will be stored in `Request::$params` as:
+
+```php
+echo Request::$params["username"] //"iloElias"
 ```
 
 
