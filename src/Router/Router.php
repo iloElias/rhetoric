@@ -36,6 +36,10 @@ class Router
    */
   public static function setup(): void
   {
+    $phpRouterFilePath = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . "router.php";
+    if (file_exists($phpRouterFilePath)) {
+      require_once $phpRouterFilePath;
+    }
     $uri = explode("?", $_SERVER["REQUEST_URI"])[0];
     $method = $_SERVER["REQUEST_METHOD"];
     self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
