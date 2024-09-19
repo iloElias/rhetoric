@@ -1,12 +1,13 @@
 <?php
 
 namespace Ilias\Rhetoric\Router;
+use Ilias\Rhetoric\Abstract\AbstractRouteHandler;
 
 /**
  * Class Route
  * Represents a single route in the routing system.
  */
-class Route
+class Route extends AbstractRouteHandler
 {
   /**
    * @var string The HTTP method of the route.
@@ -38,9 +39,9 @@ class Route
    */
   public function __construct(string $method, string $uri, string $action, array $middleware = [])
   {
-    $this->method = $method;
-    $this->uri = $uri;
-    $this->action = $action;
-    $this->middleware = $middleware;
+    $this->method = $this->validateMethod($method);
+    $this->uri = $this->prepareUri($uri);
+    $this->action = $this->validateAction($action);
+    $this->middleware = $this->validateMiddlewareArray($middleware);
   }
 }

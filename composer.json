@@ -32,7 +32,7 @@
     "phpunit/phpunit": "^11.2"
   },
   "require": {
-    "php": ">=8.0.0"
+    "ilias/opherator": "^1.0"
   },
   "minimum-stability": "stable"
 }

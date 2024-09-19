@@ -2,6 +2,8 @@
 
 namespace Ilias\Rhetoric\Router;
 
+use Ilias\Opherator\Request\Method;
+
 /**
  * Class RouterGroup
  * Represents a group of routes with a common prefix and middleware.
@@ -67,7 +69,7 @@ class RouterGroup
   public function get(string $uri, string $action, array $middleware = [])
   {
     $this->addRoute(
-      new Route('GET', $uri, $action, $middleware)
+      new Route(Method::GET, $uri, $action, $middleware)
     );
   }
 
@@ -81,7 +83,7 @@ class RouterGroup
   public function post(string $uri, string $action, array $middleware = [])
   {
     $this->addRoute(
-      new Route('POST', $uri, $action, $middleware)
+      new Route(Method::POST, $uri, $action, $middleware)
     );
   }
 
@@ -95,7 +97,7 @@ class RouterGroup
   public function put(string $uri, string $action, array $middleware = [])
   {
     $this->addRoute(
-      new Route('PUT', $uri, $action, $middleware)
+      new Route(Method::PUT, $uri, $action, $middleware)
     );
   }
 
@@ -109,7 +111,7 @@ class RouterGroup
   public function patch(string $uri, string $action, array $middleware = [])
   {
     $this->addRoute(
-      new Route('PATCH', $uri, $action, $middleware)
+      new Route(Method::PATCH, $uri, $action, $middleware)
     );
   }
 
@@ -123,7 +125,7 @@ class RouterGroup
   public function delete(string $uri, string $action, array $middleware = [])
   {
     $this->addRoute(
-      new Route('DELETE', $uri, $action, $middleware)
+      new Route(Method::DELETE, $uri, $action, $middleware)
     );
   }
 
