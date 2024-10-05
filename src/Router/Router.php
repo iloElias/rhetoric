@@ -30,15 +30,19 @@ class Router
    */
   private static array $baseMiddleware = [];
 
-  /**
-   * Initializes the routing setup by dispatching the current request URI.
-   * @return void
-   */
-  public static function setup(): void
+  public static function handle(): mixed
   {
     $uri = explode("?", $_SERVER["REQUEST_URI"])[0];
     $method = $_SERVER["REQUEST_METHOD"];
-    self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
+    return self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
+  }
+  /**
+   * Initializes the routing setup by dispatching the current request URI.
+   * @return mixed
+   */
+  public static function setup(): mixed
+  {
+    return self::handle();
   }
 
   private static function setRoute(Route $route): void
@@ -253,7 +257,7 @@ class Router
    * @throws RouteNotFoundException If no matching route is found.
    * @return void
    */
-  public static function dispatch($method, $uri): void
+  public static function dispatch($method, $uri): mixed
   {
     $routeFound = false;
 
@@ -261,8 +265,7 @@ class Router
       if (self::matchRoute($route, $uri)) {
         $routeFound = true;
         if ($route->method === $method) {
-          self::handleRoute($route);
-          return;
+          return self::handleRoute($route);
         }
       }
     }
@@ -305,9 +308,9 @@ class Router
    * Handles the matched route by executing its middleware and action.
    *
    * @param Route $route The matched route.
-   * @return void
+   * @return mixed
    */
-  private static function handleRoute(Route $route): void
+  private static function handleRoute(Route $route): mixed
   {
     foreach ($route->middleware as $middleware) {
       if (is_subclass_of($middleware, IMiddleware::class)) {
@@ -317,6 +320,6 @@ class Router
 
     [$controller, $method] = explode('@', $route->action);
     $controllerInstance = new $controller;
-    call_user_func([$controllerInstance, $method]);
+    return call_user_func([$controllerInstance, $method]);
   }
 }
