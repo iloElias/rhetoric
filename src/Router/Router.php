@@ -30,15 +30,20 @@ class Router
    */
   private static array $baseMiddleware = [];
 
+  /**
+   * Initializes the routing setup by dispatching the current request URI.
+   * @return mixed
+   */
   public static function handle(): mixed
   {
     $uri = explode("?", $_SERVER["REQUEST_URI"])[0];
     $method = $_SERVER["REQUEST_METHOD"];
     return self::dispatch($method, ($uri !== "/" && str_ends_with($uri, "/")) ? substr($uri, 0, -1) : $uri);
   }
+
   /**
-   * Initializes the routing setup by dispatching the current request URI.
-   * @return mixed
+   * @deprecated This function is deprecated and should not be used in new code.
+   * Please use `Router::handle()` method instead.
    */
   public static function setup(): mixed
   {
