@@ -19,7 +19,6 @@ abstract class AbstractRouteHandler
   protected function prepareUri(string $uri)
   {
     $uri = trim($uri);
-    $uri = rtrim($uri, '/');
     return $uri;
   }
 
