@@ -6,6 +6,7 @@ use Ilias\Opherator\Request\Method;
 use Ilias\Rhetoric\Exceptions\InvalidActionClassException;
 use Ilias\Rhetoric\Exceptions\InvalidActionMethodException;
 use Ilias\Rhetoric\Exceptions\InvalidMiddlewareException;
+use Ilias\Rhetoric\Middleware\IMiddleware;
 
 abstract class AbstractRouteHandler
 {
@@ -19,7 +20,6 @@ abstract class AbstractRouteHandler
   {
     $uri = trim($uri);
     $uri = rtrim($uri, '/');
-    $uri = strtolower($uri);
     return $uri;
   }
 
@@ -40,7 +40,7 @@ abstract class AbstractRouteHandler
   protected function validateMiddlewareArray(array $middlewares)
   {
     foreach ($middlewares as $middleware) {
-      if (!is_subclass_of($middleware, 'Ilias\Rhetoric\Middleware\IMiddleware')) {
+      if (!is_subclass_of($middleware, IMiddleware::class)) {
         throw new InvalidMiddlewareException("Middleware $middleware must implement IMiddleware.");
       }
     }
