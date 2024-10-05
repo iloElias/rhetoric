@@ -260,7 +260,7 @@ class Router
    * @param string $uri The URI of the request.
    * @throws MethodNotAllowedException If the method is not allowed for the matched route.
    * @throws RouteNotFoundException If no matching route is found.
-   * @return void
+   * @return mixed
    */
   public static function dispatch($method, $uri): mixed
   {
